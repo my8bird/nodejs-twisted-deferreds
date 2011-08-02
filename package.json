@@ -1,0 +1,14 @@
+{
+   "name": "twisted-deferred",
+   "description": "Deferreds following twisteds style.",
+   "version": "0.1",
+   "author": {
+      "name": "Nathan Landis", 
+      "email": "my8bird@gmail.com"},
+   "keywords": ["async", "deferred", "twisted"],
+   "main": "lib",
+   "dependencies": 
+   {
+      "coffee-script": ">=1.1.1"
+   }
+}
