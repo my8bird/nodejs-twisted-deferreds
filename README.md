@@ -15,38 +15,36 @@ Dependencies:
 Usage
 =====
 This is a contrived example that reads the contents of a file, trims the whitespace and prints the result to the console.  If an error occurs then it is logged
-```
-fs       = require('fs')
-Deferred = require('twisted-deferred').Deferred
 
-# Create Deferred instance that will track the steps
-d = new Deferred()
+   fs       = require('fs')
+   Deferred = require('twisted-deferred').Deferred
 
-# Add a step that cleans the content
-d.addCallback (content) ->
-   return content.trim()
+   # Create Deferred instance that will track the steps
+   d = new Deferred()
 
-# Add a step that uses the cleaned content
-d.addCallback (cleanedContent) ->
-   console.log cleanedContent
+   # Add a step that cleans the content
+   d.addCallback (content) ->
+      return content.trim()
 
-# If there is an error at any step make sure it is logged.
-d.addErrback (err) ->
-   console.error err
+   # Add a step that uses the cleaned content
+   d.addCallback (cleanedContent) ->
+      console.log cleanedContent
 
-# Grab the content from the file and start the procedure
-fs.readFile "path", "r", (err, data) ->
-   if err
-      d.errback err
-   else
-      d.callback data
-```
+   # If there is an error at any step make sure it is logged.
+   d.addErrback (err) ->
+      console.error err
+
+   # Grab the content from the file and start the procedure
+   fs.readFile "path", "r", (err, data) ->
+      if err
+         d.errback err
+      else
+         d.callback data
 
 In the future the following shortcut (or similar) will be provided for starting the process.
-```
-d = wrapDeferred(fs.readFile 'path', 'read')
-# d is now a Deferred that callbacks and errbacks can be attached too
-```
+
+   d = wrapDeferred(fs.readFile 'path', 'read')
+   # d is now a Deferred that callbacks and errbacks can be attached too
 
 Tests
 =====
