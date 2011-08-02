@@ -6,8 +6,9 @@ Links:
 
 Installation
 ============
-git://github.com/my8bird/nodejs-twisted-deferreds.git
-npm link
+    git clone git://github.com/my8bird/nodejs-twisted-deferreds.git 
+    cd nodejs-twisted-deferreds
+    (sudo) npm link
 
 Dependencies:
 
