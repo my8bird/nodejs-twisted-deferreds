@@ -1,12 +1,18 @@
 {
    "name": "twisted-deferred",
    "description": "Deferreds following twisteds style.",
-   "version": "0.1",
+   "homepage": "https://github.com/my8bird/nodejs-twisted-deferreds",
+   "version": "0.0.1",
    "author": {
       "name": "Nathan Landis", 
       "email": "my8bird@gmail.com"},
-   "keywords": ["async", "deferred", "twisted"],
    "main": "lib",
+   "repository" : { 
+      "type" : "git",
+      "url" : "https://github.com/my8bird/nodejs-twisted-deferreds.git"
+   },
+   "keywords": ["async", "deferred", "twisted"],
+   "bugs" : { "web" : "https://github.com/my8bird/nodejs-twisted-deferreds/issues" },
    "dependencies": 
    {
       "coffee-script": ">=1.1.1"

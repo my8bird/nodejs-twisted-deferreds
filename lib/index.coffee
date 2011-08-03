@@ -57,18 +57,17 @@ exports.fail = (result=null) ->
    d
 
 
-execute = (callable, args...) ->
-   """Create a deferred from a callable and arguments.
+exports.toDeferred = (func, args...) ->
+   d = new Deferred()
+   args.push (err, val) ->
+      if err
+         d.errback err
+      else
+         d.callback val
 
-   Call the given function with the given arguments.  Return a deferred which
-   has been fired with its callback as the result of that invocation or its
-   errback with a Failure for the exception thrown.
-   """
-   try
-      result = callable.apply(null, args)
-   catch ex
-      return fail(ex)
-   return succeed(result)
+   func.apply null, args
+   d
+
 
 maybeDeferred = (f, args...) ->
    """Invoke a function that may or may not return a deferred.

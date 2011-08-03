@@ -1,7 +1,8 @@
 assert   = require("assert")
 testCase = require('nodeunit').testCase
-defer = require('../lib/')
+fs = require('fs')
 
+defer = require('../lib/')
 Deferred = defer.Deferred
 
 
@@ -86,6 +87,15 @@ module.exports = testCase(
 
       assert.ok res.foundInner
 
+      test.done()
+
+   'wrapping a method an async method works': (test) ->
+      @d = defer.toDeferred(fs.readFile, "path-that-does-not-exist")
+      @d.addCallback (contents) ->
+         assert.ok False, "Only the errback should have been called."
+      @d.addErrback (err) ->
+         assert.equal err.errno, 2
+         assert.equal err.code, "ENOENT"
       test.done()
 )
 

@@ -21,8 +21,9 @@ This is a contrived example that reads the contents of a file, trims the whitesp
 
 
 
-    fs       = require('fs')
-    Deferred = require('twisted-deferred').Deferred
+    fs    = require('fs')
+    defer = require('twisted-deferred')
+    Deferred = defer.Deferred
 
     # Create Deferred instance that will track the steps
     d = new Deferred()
@@ -46,12 +47,13 @@ This is a contrived example that reads the contents of a file, trims the whitesp
         else
             d.callback data
 
-Future
-------
-In the future the following shortcut (or similar) will be provided for starting the process.
+It is also possible to wrap existing async code using the toDeferred method:
+    d = defer.toDeferred(fs.readFile, "path")
+    d.addCallback (content) ->
+       console.log content
+    d.addErrback (err) ->
+       # log err
 
-    d = wrapDeferred(fs.readFile 'path', 'read')
-    # d is now a Deferred that callbacks and errbacks can be attached too
 
 Tests
 =====
