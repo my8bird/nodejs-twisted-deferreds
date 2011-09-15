@@ -59,13 +59,13 @@ exports.fail = (result=null) ->
 
 exports.toDeferred = (func, args...) ->
    d = new Deferred()
-   args.push (err, val) ->
+   args.push (err, args...) ->
       if err
          d.errback err
       else
-         d.callback val
+         d.callback args...
 
-   func.apply null, args
+   func.apply undefined, args
    d
 
 
@@ -268,7 +268,6 @@ class Deferred
                   if callback
                      @result = callback.apply(null, args)
                catch ex
-                  #console.log ex
                   throw ex
                finally
                   @_runningCallbacks = false
@@ -289,4 +288,31 @@ class Deferred
                @result = new Failure(ex)
 
 exports.Deferred = Deferred
+
+exports.DeferredList = (deferreds) ->
+   deferred = new Deferred()
+   done = deferred.callback.bind(deferred)
+
+   res = []
+   for i of  deferreds
+      d = deferreds[i]
+
+      d.addCallback (v) ->
+         res.push([null, v])
+
+         if deferreds.length == res.length
+            done res
+
+      d.addErrback (err) ->
+         # Since there has been an error switch over to the errback when done
+         done = deferred.errback.bind(deferred)
+
+         # Store the error
+         res.push([err, null])
+
+         # See if we are done now
+         if deferreds.length == res.length
+            done res
+
+   return deferred
 
