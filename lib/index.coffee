@@ -52,7 +52,7 @@ exports.fail = (result=null) ->
 
    @rtype: L{Deferred}
    """
-   d = Deferred()
+   d = new Deferred()
    d.errback(result)
    d
 
