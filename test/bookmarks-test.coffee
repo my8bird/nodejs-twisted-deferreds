@@ -97,5 +97,32 @@ module.exports = testCase(
          assert.equal err.errno, 2
          assert.equal err.code, "ENOENT"
       test.done()
+
+   'using maybeDeferred on a value returns that value': (test) ->
+      test.expect 1
+      @d = defer.maybeDeferred ((x) -> x), 42
+      @d.addCallback (x) ->
+         test.ok x, 42
+         test.done()
+      @d.addErrback () ->
+         test.ok false, "Errback should not have been called."
+
+   'using maybeDeferred on a deferred returns that deferred': (test) ->
+      test.expect 1
+      inner = new defer.Deferred
+      @d = defer.maybeDeferred ((x)-> inner.callback x), 42
+      @d.addCallback (x) ->
+         test.ok x, 42
+         test.done()
+      @d.addErrback () ->
+         test.ok false, "Errback should not have been called."
+
+   'using maybeDeferred on a failure calls the errback': (test) ->
+      @d = defer.maybeDeferred ((x) -> throw new Error("fail")), 42
+      @d.addCallback (x) ->
+         test.ok false, "Callback should not have been called."
+      @d.addErrback (f) ->
+         test.equal f.message.message, "fail"
+         test.done()
 )
 
