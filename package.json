@@ -2,10 +2,11 @@
    "name": "twisted-deferred",
    "description": "Deferreds following twisteds style.",
    "homepage": "https://github.com/my8bird/nodejs-twisted-deferreds",
-   "version": "0.1.0",
+   "version": "0.1.1",
    "author": {
       "name": "Nathan Landis", 
       "email": "my8bird@gmail.com"},
+   "contributors": "Thomas Nixon",
    "main": "lib",
    "repository" : { 
       "type" : "git",
