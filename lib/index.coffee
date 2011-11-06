@@ -91,7 +91,7 @@ exports.maybeDeferred = (f, args...) ->
    try
       result = f.apply(null, args)
    catch ex
-      return exports.fail(new DeferredError())
+      return exports.fail(ex)
 
    if result instanceof Deferred
       return result
