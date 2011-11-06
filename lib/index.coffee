@@ -52,7 +52,7 @@ exports.fail = (result=null) ->
 
    @rtype: L{Deferred}
    """
-   d = Deferred()
+   d = new Deferred()
    d.errback(result)
    d
 
@@ -69,7 +69,7 @@ exports.toDeferred = (func, args...) ->
    d
 
 
-maybeDeferred = (f, args...) ->
+exports.maybeDeferred = (f, args...) ->
    """Invoke a function that may or may not return a deferred.
 
    Call the given function with the given arguments.  If the returned
@@ -91,14 +91,14 @@ maybeDeferred = (f, args...) ->
    try
       result = f.apply(null, args)
    catch ex
-      return fail(new DeferredError())
+      return exports.fail(ex)
 
    if result instanceof Deferred
       return result
    else if result instanceof Failure
       return fail(result)
    else
-      return succeed(result)
+      return exports.succeed(result)
 
    return null
 
@@ -208,10 +208,18 @@ class Deferred
 
    errback: (fail=null) ->
      """
-     XXX
+     Run all error callbacks that have been added to this Deferred.
+
+     Each callback will have its result passed as the first argument to the
+     next; this way, the callbacks act as a 'processing chain'. Also, if the
+     error-callback returns a non-Failure or doesn't raise an Exception,
+     processing will continue on the *success*-callback chain.
+
+     If the argument that's passed to me is not a failure.Failure instance, it
+     will be embedded in one. If no argument is passed, a failure.Failure
+     instance will be created based on the current traceback stack.
      """
-     f = if fail instanceof Failure then file else new Failure(fail)
-     assert.ok f instanceof Failure
+     f = if fail instanceof Failure then fail else new Failure(fail)
 
      @_startRunCallbacks(f)
 
