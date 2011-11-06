@@ -69,7 +69,7 @@ exports.toDeferred = (func, args...) ->
    d
 
 
-maybeDeferred = (f, args...) ->
+exports.maybeDeferred = (f, args...) ->
    """Invoke a function that may or may not return a deferred.
 
    Call the given function with the given arguments.  If the returned
@@ -91,14 +91,14 @@ maybeDeferred = (f, args...) ->
    try
       result = f.apply(null, args)
    catch ex
-      return fail(new DeferredError())
+      return exports.fail(new DeferredError())
 
    if result instanceof Deferred
       return result
    else if result instanceof Failure
       return fail(result)
    else
-      return succeed(result)
+      return exports.succeed(result)
 
    return null
 
