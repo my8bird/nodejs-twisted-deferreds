@@ -135,7 +135,7 @@ class Deferred
       # used.
       @_runningCallbacks = false
 
-   addCallbacks: (callback, callbackArgs=null, errback=passthru, errbackArgs=null) ->
+   addCallbacks: (callback, callbackArgs=null, errback=passthru, errbackArgs=null) =>
       """
       Add a pair of callbacks (success and error) to this Deferred.
 
@@ -150,7 +150,7 @@ class Deferred
          @_runCallbacks()
       @
 
-   addCallback: (callback, args...) ->
+   addCallback: (callback, args...) =>
      """
      Convenience method for adding just a callback.
 
@@ -166,7 +166,7 @@ class Deferred
      """
      @addCallbacks(passthru, null, errback, errbackArgs=args)
 
-   addBoth: (callback, args...) ->
+   addBoth: (callback, args...) =>
      """
      Convenience method for adding a single callable as both a callback
      and an errback.
@@ -175,7 +175,7 @@ class Deferred
      """
      @addCallbacks(callback, callbackArgs=args, callback, errbackArgs=args)
 
-   chainDeferred: (d) ->
+   chainDeferred: (d) =>
      """
      Chain another Deferred to this Deferred.
 
@@ -183,7 +183,7 @@ class Deferred
      errback, as appropriate. It is merely a shorthand way of performing
      the following::
 
-      @addCallbacks(d.callback, d.errback)
+      @addCallbacks(d.callback, undefined, d.errback, undefined)
 
      When you chain a deferred d2 to another deferred d1 with
      d1.chainDeferred(d2), you are making d2 participate in the callback
@@ -191,9 +191,9 @@ class Deferred
      However, the converse is B{not} true; if d2 is fired d1 will not be
      affected.
      """
-     @addCallbacks(d.callback, d.errback)
+     @addCallback(d.callback, undefined, d.errback, undefined)
 
-   callback: (result) ->
+   callback: (result) =>
      """
      Run all success callbacks that have been added to this Deferred.
 
@@ -205,8 +205,7 @@ class Deferred
      """
      @_startRunCallbacks(result)
 
-
-   errback: (fail=null) ->
+   errback: (fail=null) =>
      """
      Run all error callbacks that have been added to this Deferred.
 
@@ -223,7 +222,7 @@ class Deferred
 
      @_startRunCallbacks(f)
 
-   pause: () ->
+   pause: () =>
       """
       Stop processing on a Deferred until L{unpause}() is called.
       """
@@ -237,11 +236,11 @@ class Deferred
       if @paused == 0 and @called
          @_runCallbacks()
 
-   _continue: (result) ->
+   _continue: (result) =>
       @result = result
       @unpause()
 
-   _startRunCallbacks: (result) ->
+   _startRunCallbacks: (result) =>
       if @called
          throw new AlreadyCalledError()
 
@@ -257,7 +256,7 @@ class Deferred
 
       @_runCallbacks()
 
-   _runCallbacks: () ->
+   _runCallbacks: () =>
       if @_runningCallbacks
          # Don't recursively run callbacks
          return
@@ -267,15 +266,18 @@ class Deferred
             next_cb = @callbacks.shift()
             key = if @result instanceof Failure then 'error' else 'success'
             caller = next_cb[key]
+            console.log(caller)
             callback = caller[0]
             args = caller[1] or []
             try
                @_runningCallbacks = true
                try
+                  console.log(args)
                   args.splice(0, 0, @result)
                   if callback
                      @result = callback.apply(null, args)
                catch ex
+                  console.log(ex)
                   throw ex
                finally
                   @_runningCallbacks = false
