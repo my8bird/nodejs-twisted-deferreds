@@ -47,7 +47,7 @@ module.exports = testCase(
       @d = new Deferred()
       @d.addErrback errCB
       @d.addErrback errCB
-                  
+
       res = {count: 0}
       @d.errback res
       assert.equal res.count, 2
@@ -124,5 +124,18 @@ module.exports = testCase(
       @d.addErrback (f) ->
          test.equal f.message.message, "fail"
          test.done()
-)
 
+   'chaining deferreds works correctly.': (test) ->
+      '''
+      Connect the primary testing deferreds completion to an intial deferred
+      This test will fail if the deferreds fail to chain correctly.
+      '''
+      start_deferred = new defer.Deferred
+      start_deferred.chainDeferred(@d)
+      # when @d finishes mark the test as done
+      @d.addCallback (value) ->
+         test.equal(value, 55) # the value passing worked
+         test.done()
+
+      start_deferred.callback(55)
+)
