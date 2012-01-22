@@ -266,13 +266,11 @@ class Deferred
             next_cb = @callbacks.shift()
             key = if @result instanceof Failure then 'error' else 'success'
             caller = next_cb[key]
-            console.log(caller)
             callback = caller[0]
             args = caller[1] or []
             try
                @_runningCallbacks = true
                try
-                  console.log(args)
                   args.splice(0, 0, @result)
                   if callback
                      @result = callback.apply(null, args)
