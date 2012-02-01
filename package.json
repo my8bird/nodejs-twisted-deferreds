@@ -4,18 +4,24 @@
    "homepage": "https://github.com/my8bird/nodejs-twisted-deferreds",
    "version": "0.2.0",
    "author": {
-      "name": "Nathan Landis", 
+      "name": "Nathan Landis",
       "email": "my8bird@gmail.com"},
    "contributors": ["Thomas Nixon"],
+   "scripts": {
+      "test": "./node_modules/nodeunit/bin/nodeunit test/*"
+   },
    "main": "lib",
-   "repository" : { 
+   "repository" : {
       "type" : "git",
       "url" : "https://github.com/my8bird/nodejs-twisted-deferreds.git"
    },
    "keywords": ["async", "deferred", "twisted"],
    "bugs" : { "url" : "https://github.com/my8bird/nodejs-twisted-deferreds/issues" },
-   "dependencies": 
+   "dependencies":
    {
       "coffee-script": ">=1.1.1"
+   },
+   "devDependencies": {
+      "nodeunit": "0.6.x"
    }
 }
