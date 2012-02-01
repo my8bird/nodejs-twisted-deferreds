@@ -1,4 +1,4 @@
-"!https://secure.travis-ci.org/my8bird/nodejs-twisted-deferreds.png?branch=master!":http://travis-ci.org/my8bird/nodejs-twisted-deferreds
+[![Build Status](https://secure.travis-ci.org/my8bird/nodejs-twisted-deferreds.png?branch=master)](http://travis-ci.org/my8bird/nodejs-twisted-deferreds)
 
 
 Direct port of python's Twisted Deferred module to coffeescript and thus javascript.
