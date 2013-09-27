@@ -324,9 +324,7 @@ exports.DeferredList = (deferreds) ->
    done = deferred.callback.bind(deferred)
 
    res = []
-   for i of  deferreds
-      d = deferreds[i]
-
+   for d in deferreds
       d.addCallback (v) ->
          res.push([null, v])
 
