@@ -11,7 +11,8 @@ class DeferredError extends Failure
    name = "DeferredError"
 class TimeoutError extends Failure
    name = "TimeoutError"
-
+class CancelledError extends Failure
+   name = "CancelledError"
 
 logError = (err) ->
    console.error err
@@ -124,11 +125,12 @@ class Deferred
    For more information about Deferreds, see doc/howto/defer.html or
    U{http://twistedmatrix.com/projects/core/documentation/howto/defer.html}
    """
-   constructor: () ->
+   constructor: (canceller=null) ->
       @callbacks = []
       @called = 0
       @paused = 0
       @timeoutCall = null
+      @_canceller = canceller;
 
       # Are we currently running a user-installed callback?  Meant to prevent
       # recursive running of callbacks when a reentrant call to add a callback is
@@ -236,6 +238,26 @@ class Deferred
       if @paused == 0 and @called
          @_runCallbacks()
 
+   cancel: () ->
+     """
+     Cancel this Deferred.
+     If the Deferred has not yet had its errback or callback method
+     invoked, call the canceller function provided to the constructor.
+     If that function does not invoke callback or errback, or if no 
+     canceller function was provided, errback with CancelledError.
+
+     If this Deferred is waiting on another Deferred, forward the
+     cancellation to the other Deferred.
+     """
+     if not @called
+       if @_canceller
+         @_canceller(this)
+       
+       if !@called
+         @errback(new CancelledError())
+     else if @result instanceof Deferred
+       @result.cancel()
+
    _continue: (result) =>
       @result = result
       @unpause()
@@ -302,9 +324,7 @@ exports.DeferredList = (deferreds) ->
    done = deferred.callback.bind(deferred)
 
    res = []
-   for i of  deferreds
-      d = deferreds[i]
-
+   for d in deferreds
       d.addCallback (v) ->
          res.push([null, v])
 
@@ -323,4 +343,3 @@ exports.DeferredList = (deferreds) ->
             done res
 
    return deferred
-
